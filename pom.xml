@@ -24,6 +24,10 @@
      <artifactId>spring-boot-starter-test</artifactId>
      <scope>test</scope>
     </dependency>
+    <dependency>
+	    <groupId>redis.clients</groupId>
+	    <artifactId>jedis</artifactId>
+	    </dependency>
   </dependencies>
   
   <!-- Package as an executable jar -->
