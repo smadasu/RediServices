@@ -1,6 +1,7 @@
 package org.ms.service;
 
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.PreDestroy;
 
@@ -37,6 +38,12 @@ public class JedisServices {
 		}
 	}
 	
+	public Set<String> keys() {
+		try (Jedis jedis = getPool().getResource()) {
+			return jedis.keys("*");
+		}
+	}
+	
 	public Optional<String> getValue(String key) {
 		String returnValue = null;
 		try (Jedis jedis = getPool().getResource()) {
@@ -54,6 +61,12 @@ public class JedisServices {
 	public String setValue(String key, String value) {
 		try (Jedis jedis = getPool().getResource()) {
 			return jedis.set(key, value);
+		}		
+	}
+	
+	public Long deleteKeys(String...keys) {
+		try (Jedis jedis = getPool().getResource()) {
+			return jedis.del(keys);
 		}		
 	}
 	

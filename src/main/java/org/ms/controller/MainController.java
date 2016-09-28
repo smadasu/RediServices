@@ -3,12 +3,17 @@
  */
 package org.ms.controller;
 
+import java.util.Set;
+
 import org.ms.service.JedisServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,24 +22,34 @@ public class MainController {
 	@Autowired
 	private JedisServices jedisServices;
 	
-	@RequestMapping("/")
+	@GetMapping("/")
 	public String index() {
 		return "Redis Web Services";
 	}
 	
-	@RequestMapping(produces=MediaType.TEXT_PLAIN_VALUE, value="/info")
+	@GetMapping("/info")
 	public String info() {
 		return jedisServices.getInfo();
 	}
 	
-	@RequestMapping(produces=MediaType.TEXT_PLAIN_VALUE, value="/get/{key}")
-	public String getValue(@PathVariable(value="key") String key) {
+	@GetMapping("/keys")
+	public Set<String> keys() {
+		return jedisServices.keys();
+	}
+	
+	@GetMapping("/get/{key}")
+	public String getValue(@PathVariable String key) {
 		return jedisServices.getValue(key).orElse(key + " not found");
 	}
 	
-	@RequestMapping(produces=MediaType.TEXT_PLAIN_VALUE, value="/set/{key}")
-	public String setValue(@PathVariable(value="key") String key, @RequestBody String value) {
+	@PostMapping("/set/{key}")
+	public String setValue(@PathVariable String key, @RequestParam String value) {
 		return jedisServices.setValue(key, value);
+	}
+	
+	@DeleteMapping("/delete/{keys}")
+	public Long deleteKeys(@PathVariable String...keys) {
+		return jedisServices.deleteKeys(keys);
 	}
 
 }
